@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -129,4 +130,35 @@ func (a *Automata) ToString() string {
 	}
 
 	return builder.String()
+}
+
+// ProcessInput procesa la entrada y actualiza el estado actual del autómata.
+// También agrega el estado actual al historial de estados actuales.
+// Recibe: input - una cadena de entrada que se procesará.
+// No retorna ningún valor.
+func (a *Automata) ProcessInput(input string) {
+	a.currentState = a.initialState
+	for _, char := range input {
+		transitionFound := false
+		for _, transition := range a.transitions {
+			if transition.from.GetName() == a.currentState.GetName() && transition.input == string(rune(char)) {
+				a.currentState = transition.to
+				transitionFound = true
+				a.historyCurrentState = append(a.historyCurrentState, a.currentState)
+				break
+			}
+		}
+		if !transitionFound {
+			fmt.Println("Entrada no válida:", string(char))
+			os.Exit(1)
+		}
+	}
+}
+
+// IsAccepted determina si el autómata acepta la entrada basándose en su estado actual.
+// No recibe ningún parámetro.
+// Retorna: Un booleano que indica si la entrada es aceptada por el autómata.
+func (a *Automata) IsAccepted() bool {
+	_, isFinal := a.finalStates[a.currentState.name]
+	return isFinal
 }

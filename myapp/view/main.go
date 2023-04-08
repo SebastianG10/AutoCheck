@@ -16,6 +16,22 @@ func main() {
 	finalStatesMap := control.ReadFinalStates("q1")
 
 	automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
-	fmt.Print(automata.ToString())
+
+	// Prueba para ProcessInput
+	input := "1010"
+	automata.ProcessInput(input)
+	fmt.Printf("Después de procesar la entrada '%s', el estado actual es: %s\n", input, automata.GetCurrentState().GetName())
+
+	fmt.Println("Historial de estados actuales:")
+	for _, state := range automata.GetHistoryCurrentState() {
+		fmt.Printf("%s -> ", state.GetName())
+	}
+
+	// Prueba para IsAccepted
+	if automata.IsAccepted() {
+		fmt.Println("La entrada es aceptada por el autómata.")
+	} else {
+		fmt.Println("La entrada no es aceptada por el autómata.")
+	}
 
 }
