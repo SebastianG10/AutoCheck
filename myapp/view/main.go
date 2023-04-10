@@ -1,8 +1,9 @@
 package main
 
 import (
-	// "fmt"
-	// "myapp/controller"
+	"fmt"
+	"myapp/controller"
+	"myapp/model"
 
 	// Imports para interfaz gráfica
 	"image/color"
@@ -41,34 +42,6 @@ func interfaz() {
 }
 
 func logicContent() *fyne.Container {
-	// control := &controller.ControlAutomatas{}
-
-	// stateMap := control.ReadState("q0,q1")
-	// symbols := control.ReadSymbols("0,1")
-	// transitionsList := control.ReadTransitions("[q0,0,q1],[q0,1,q0],[q1,0,q1],[q1,1,q0]", stateMap)
-	// initialState := control.ReadInitialState("q0")
-	// finalStatesMap := control.ReadFinalStates("q1")
-
-	// automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
-
-	// // Prueba para ProcessInput
-	// input := "1010"
-	// automata.ProcessInput(input)
-	// fmt.Printf("Después de procesar la entrada '%s', el estado actual es: %s\n", input, automata.GetCurrentState().GetName())
-
-	// fmt.Println("Historial de estados actuales:")
-	// for _, state := range automata.GetHistoryCurrentState() {
-	// 	fmt.Printf("%s -> ", state.GetName())
-	// }
-
-	// // Prueba para IsAccepted
-	// if automata.IsAccepted() {
-	// 	fmt.Println("La entrada es aceptada por el autómata.")
-	// } else {
-	// 	fmt.Println("La entrada no es aceptada por el autómata.")
-	// }
-
-	//------------------------------------------------------------------------------------------------------------------------------
 	instrucciones := canvas.NewText("Ingrese la quintupla del autómata siguiendo las indicaciones que se den", blue)
 
 	//ingreso de estados
@@ -92,21 +65,27 @@ func logicContent() *fyne.Container {
 	initialCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), initialInstruc, initialInput)
 
 	//ingreso de transiciones
-	finalInstruc := widget.NewLabel("Ingrese las transiciones del automata con el sigiente formato: [from,input,to]\nEjemplo: [q0,1,q0],[q1,0,q1],...")
+	finalInstruc := widget.NewLabel("Ingrese el estado final de su autómata:\nEjemplo: q1")
 	finalInput := widget.NewEntry()
 	finalCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), finalInstruc, finalInput)
 
 	//botón para construir autómata
+	automataContainer := container.NewWithoutLayout()
 	constAutomata := widget.NewButtonWithIcon("Construir Autómata", theme.ConfirmIcon(), func() {
+		control := &controller.ControlAutomatas{}
 
-		// stateMap := control.ReadState(statesInput.SelectedText())
-		// symbols := control.ReadSymbols(symbolsInput.SelectedText())
-		// transitionsList := control.ReadTransitions(transitionsInput.SelectedText(), stateMap)
-		// initialState := control.ReadInitialState(initialInput.SelectedText())
-		// finalStatesMap := control.ReadFinalStates(finalInput.SelectedText())
+		// fmt.Println(&statesInput)
 
-		// automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
+		stateMap := control.ReadState(statesInput.Text)
+		symbols := control.ReadSymbols(symbolsInput.Text)
+		transitionsList := control.ReadTransitions(transitionsInput.Text, stateMap)
+		initialState := control.ReadInitialState(initialInput.Text)
+		finalStatesMap := control.ReadFinalStates(finalInput.Text)
 
+		automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
+		fmt.Println(automata.ToString())
+
+		automataContainer.AddObject(renderizarAutomata(automata))
 	})
 
 	// se puede intentar añadir fondo con un max y un rectangulo
@@ -122,7 +101,7 @@ func logicContent() *fyne.Container {
 
 	content := fyne.NewContainerWithLayout(layout.NewHBoxLayout(),
 		cargarAutomatacont,
-		// renderizar automata en la parte derecha de la ventana
+		automataContainer,
 		layout.NewSpacer(),
 	)
 	return content
@@ -215,4 +194,11 @@ func logicaAutomata() {
 		} else {
 			fmt.Println("La entrada no es aceptada por el autómata.")
 		} */
+}
+
+func renderizarAutomata(automata *model.Automata)  *fyne.Container{
+
+
+
+	return fyne.NewContainer()
 }
