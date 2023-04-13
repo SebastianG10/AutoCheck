@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"myapp/controller"
 	"myapp/model"
+	"strings"
 
 	// Imports para interfaz gráfica
 	"image/color"
@@ -20,6 +21,7 @@ import (
 
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
+var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
 
 // main es la función principal del programa.
 func main() {
@@ -84,7 +86,7 @@ func logicContent() *fyne.Container {
 
 		automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
 		fmt.Println(automata.ToString())
-
+		// automataContainer.Resize(fyne.NewSize(200,200))
 		automataContainer.AddObject(renderizarAutomata(automata))
 	})
 
@@ -196,9 +198,44 @@ func logicaAutomata() {
 		} */
 }
 
-func renderizarAutomata(automata *model.Automata)  *fyne.Container{
+func renderizarAutomata(automata *model.Automata) *fyne.Container {
 
+	// p1 := fyne.Position{10, 10}
+	// p2 := fyne.Position{110, 10}
+	// p3 := fyne.Position{10, 110}
+	// p4 := fyne.Position{110, 110}
+	posiciones := []fyne.Position{{X: 100, Y: 100}, {X: 400, Y: 100}, {X: 100, Y: 400}, {X: 400, Y: 400}}
+	// contState := []fyne.Container{}
+	myCanvas := container.NewWithoutLayout()
+	// myCanvas.Resize(fyne.NewSize(200, 200))
+	i := 0
+	for _, state := range automata.GetStates() {
 
+		circle := canvas.NewCircle(color.White)
+		if state.GetName() == automata.GetInitialState().GetName() {
+			circle.FillColor = blue
+		}
+		// Iterar sobre la lista y comparar cada string con la palabra
+		for _, elemento := range automata.GetFinalStates() {
+			if strings.EqualFold(elemento.GetName(), state.GetName()) {
+				circle.FillColor = red
+				break // Salir del bucle si se encuentra la palabra
+			}
+		}
 
-	return fyne.NewContainer()
+		// La palabra no está en la lista
+		// Hacer algo aquí...
+
+		stateText := canvas.NewText(state.GetName(), color.Black)
+		stateText.Alignment = fyne.TextAlignCenter
+
+		estado := container.NewMax(circle, stateText)
+		estado.Resize(fyne.NewSize(50, 50))
+		estado.Move(posiciones[i])
+
+		myCanvas.AddObject(estado)
+		i++
+	}
+
+	return myCanvas
 }
