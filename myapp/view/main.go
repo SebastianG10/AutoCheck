@@ -22,6 +22,7 @@ import (
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
 var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
+var gray = color.NRGBA{R: 170, G: 170, B: 170, A: 0xff}
 
 // main es la función principal del programa.
 func main() {
@@ -73,7 +74,7 @@ func logicContent() *fyne.Container {
 
 	//botón para construir autómata
 	automataContainer := container.NewWithoutLayout()
-	constAutomata := widget.NewButtonWithIcon("Construir Autómata", theme.ConfirmIcon(), func() {
+	constuirAutomata := widget.NewButtonWithIcon("Construir Autómata", theme.ConfirmIcon(), func() {
 		control := &controller.ControlAutomatas{}
 
 		// fmt.Println(&statesInput)
@@ -98,7 +99,7 @@ func logicContent() *fyne.Container {
 		transitionsCont,
 		initialCont,
 		finalCont,
-		constAutomata,
+		constuirAutomata,
 	)
 
 	content := fyne.NewContainerWithLayout(layout.NewHBoxLayout(),
@@ -199,41 +200,57 @@ func logicaAutomata() {
 }
 
 func renderizarAutomata(automata *model.Automata) *fyne.Container {
-
-	// p1 := fyne.Position{10, 10}
-	// p2 := fyne.Position{110, 10}
-	// p3 := fyne.Position{10, 110}
-	// p4 := fyne.Position{110, 110}
+	//definimos las posiciones fijas para los estados del automata de max 4 estados
 	posiciones := []fyne.Position{{X: 100, Y: 100}, {X: 400, Y: 100}, {X: 100, Y: 400}, {X: 400, Y: 400}}
-	// contState := []fyne.Container{}
 	myCanvas := container.NewWithoutLayout()
-	// myCanvas.Resize(fyne.NewSize(200, 200))
 	i := 0
+	// for para graficar los estados
 	for _, state := range automata.GetStates() {
-
+		state.SetPosition(posiciones[i])
 		circle := canvas.NewCircle(color.White)
+		// circle.StrokeColor = color.Black
+		// circle.StrokeWidth = 13
+		//buscar estado inicial
 		if state.GetName() == automata.GetInitialState().GetName() {
 			circle.FillColor = blue
 		}
-		// Iterar sobre la lista y comparar cada string con la palabra
+		// buscar estados finales
 		for _, elemento := range automata.GetFinalStates() {
 			if strings.EqualFold(elemento.GetName(), state.GetName()) {
-				circle.FillColor = red
-				break // Salir del bucle si se encuentra la palabra
+				circle.StrokeWidth = 9
+				// circle.FillColor = gray
+				break
 			}
 		}
-
-		// La palabra no está en la lista
-		// Hacer algo aquí...
 
 		stateText := canvas.NewText(state.GetName(), color.Black)
 		stateText.Alignment = fyne.TextAlignCenter
 
 		estado := container.NewMax(circle, stateText)
-		estado.Resize(fyne.NewSize(50, 50))
-		estado.Move(posiciones[i])
+
+		estado.Resize(fyne.NewSize(60, 60))
+		estado.Move(state.GetPosition())
 
 		myCanvas.AddObject(estado)
+		i++
+	}
+
+	// for para graficar las transiciones
+	for _, transition := range automata.GetTransitions() {
+
+		linea := canvas.NewLine(color.White)
+		linea.Position1 = transition.GetFromState().GetPosition().AddXY(30, 30)
+		linea.Position2 = transition.GetToState().GetPosition().AddXY(30,30)
+
+		transitionText := canvas.NewText(transition.GetInput(), color.White)
+		transitionText.Alignment = fyne.TextAlignCenter
+
+		transicion := container.NewWithoutLayout(linea, transitionText)
+
+		// transicion.Resize(fyne.NewSize(60, 60))
+		// transicion.Move(transition.GetPosition())
+
+		myCanvas.AddObject(transicion)
 		i++
 	}
 
