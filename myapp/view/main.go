@@ -28,8 +28,8 @@ import (
 
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
-var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
-var gray = color.NRGBA{R: 170, G: 170, B: 170, A: 0xff}
+// var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
+// var gray = color.NRGBA{R: 170, G: 170, B: 170, A: 0xff}
 
 // main es la función principal del programa.
 func main() {
@@ -60,35 +60,35 @@ func logicContent() *fyne.Container {
 	estadosLabel.TextStyle = fyne.TextStyle{Bold: true}
 	statesInstruc := widget.NewLabel("Ingrese los estados de su autómata separandolos con comas\nEjemplo: q0,q1,q2...")
 	statesInput := widget.NewEntry()
-	statesCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), estadosLabel, statesInstruc, statesInput)
+	statesCont := container.New(layout.NewVBoxLayout(), estadosLabel, statesInstruc, statesInput)
 
 	//ingreso de alfabeto
 	alfabetoLabel := canvas.NewText("Alfabeto", color.White)
 	alfabetoLabel.TextStyle = fyne.TextStyle{Bold: true}
 	symbolsInstruc := widget.NewLabel("Ingrese los simbolos del alfabeto separandolos con comas\nEjemplo: 0,1...")
 	symbolsInput := widget.NewEntry()
-	symbolsCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), alfabetoLabel, symbolsInstruc, symbolsInput)
+	symbolsCont := container.New(layout.NewVBoxLayout(), alfabetoLabel, symbolsInstruc, symbolsInput)
 
 	//ingreso de transiciones
 	transicionesLabel := canvas.NewText("Transiciones", color.White)
 	transicionesLabel.TextStyle = fyne.TextStyle{Bold: true}
 	transitionsInstruc := widget.NewLabel("Ingrese las transiciones del automata con el sigiente formato: [from,input,to]\nEjemplo: [q0,1,q0],[q1,0,q1],...")
 	transitionsInput := widget.NewEntry()
-	transitionsCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), transicionesLabel, transitionsInstruc, transitionsInput)
+	transitionsCont := container.New(layout.NewVBoxLayout(), transicionesLabel, transitionsInstruc, transitionsInput)
 
 	//ingreso del estado inicial
 	inicialLabel := canvas.NewText("Estado Inicial", color.White)
 	inicialLabel.TextStyle = fyne.TextStyle{Bold: true}
 	initialInstruc := widget.NewLabel("Ingrese el estado inicial de su autómata\nEjemplo: q0")
 	initialInput := widget.NewEntry()
-	initialCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), inicialLabel, initialInstruc, initialInput)
+	initialCont := container.New(layout.NewVBoxLayout(), inicialLabel, initialInstruc, initialInput)
 
 	//ingreso de estados finales
 	finalesLabel := canvas.NewText("Estados Finales", color.White)
 	finalesLabel.TextStyle = fyne.TextStyle{Bold: true}
 	finalInstruc := widget.NewLabel("Ingrese el estado final de su autómata:\nEjemplo: q1")
 	finalInput := widget.NewEntry()
-	finalCont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), finalesLabel, finalInstruc, finalInput)
+	finalCont := container.New(layout.NewVBoxLayout(), finalesLabel, finalInstruc, finalInput)
 
 	//botón para construir autómata
 	automataContainer := container.NewCenter()
@@ -104,11 +104,11 @@ func logicContent() *fyne.Container {
 		// se crea el automata
 		automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
 		fmt.Println(automata.ToString())
-		// añadimos la imagen graphviz retornada por renderizarAutomata al automataContainer 
-		automataContainer.AddObject(renderizarAutomata(automata))
+		// añadimos la imagen graphviz retornada por renderizarAutomata al automataContainer
+		automataContainer.Add(renderizarAutomata(automata))
 	})
 	//container izquierdo donde se ingresa la quintupla del autómata
-	cargarAutomatacont := fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
+	cargarAutomatacont := container.New(layout.NewVBoxLayout(),
 		instrucciones,
 		layout.NewSpacer(),
 		statesCont,
@@ -123,9 +123,9 @@ func logicContent() *fyne.Container {
 		layout.NewSpacer(),
 		constuirAutomata,
 	)
-	
-	// container horizontal principal 
-	content := fyne.NewContainerWithLayout(layout.NewHBoxLayout(),
+
+	// container horizontal principal
+	content := container.New(layout.NewHBoxLayout(),
 		layout.NewSpacer(),
 		cargarAutomatacont,
 		widget.NewSeparator(),
@@ -182,8 +182,8 @@ func welcomeContent(app fyne.App) *fyne.Container {
 	jCard.SetImage(jImage)
 	// metemos los cards en un container horizontal que a su vez añadiremos al contenido principal que es un container vertical
 	cards := container.NewHBox(layout.NewSpacer(), gcard, sCard, jCard, layout.NewSpacer())
-	// container verticall para el contenido principal de la ventna de bienvenida 
-	content := fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
+	// container vertical para el contenido principal de la ventana de bienvenida
+	content := container.New(layout.NewVBoxLayout(),
 		layout.NewSpacer(),
 		infinite,
 		welcome,

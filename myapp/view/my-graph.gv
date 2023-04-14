@@ -1,10 +1,10 @@
 strict digraph {
 
 
-	"1" [ color="2", colorscheme="blues3", fillcolor="1", shape="doublecircle", style="filled",  weight=0 ];
+	"A" [ color="2", colorscheme="blues3", fillcolor="1", style="filled",  weight=0 ];
 
-	"2" [ shape="doublecircle",  weight=0 ];
+	"A" -> "B" [ label="1",  weight=0 ];
 
-	"3" [  weight=0 ];
+	"B" [ shape="doublecircle",  weight=0 ];
 
 }
