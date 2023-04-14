@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"myapp/controller"
 	"myapp/model"
 	"os"
@@ -28,6 +30,7 @@ import (
 
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
+
 // var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
 // var gray = color.NRGBA{R: 170, G: 170, B: 170, A: 0xff}
 
@@ -37,6 +40,8 @@ func main() {
 	interfaz()
 
 	logicaAutomata()
+
+	leerEntrada()
 
 }
 
@@ -267,11 +272,11 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	for _, t1 := range automata.GetTransitions() {
 		inputs := t1.GetInput()
 		for _, t2 := range automata.GetTransitions() {
-			if t1.GetFromState().GetName() == t2.GetFromState().GetName() && t1.GetInput() != t2.GetInput() && t1.GetToState().GetName() == t2.GetToState().GetName(){
+			if t1.GetFromState().GetName() == t2.GetFromState().GetName() && t1.GetInput() != t2.GetInput() && t1.GetToState().GetName() == t2.GetToState().GetName() {
 				inputs += ","
-		        inputs += t2.GetInput()
+				inputs += t2.GetInput()
 			}
-			
+
 		}
 		_ = g.AddEdge(t1.GetFromState().GetName(), t1.GetToState().GetName(), graph.EdgeAttribute("label", inputs))
 	}
@@ -289,4 +294,27 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	imagen.SetMinSize(fyne.NewSize(600, 600))
 	// retornamos la imagen
 	return imagen
+}
+
+func leerEntrada() {
+	// Leer el archivo JSON
+	file, _ := ioutil.ReadFile("entradas.json")
+
+	// Decodificar el archivo JSON
+	var entradas []map[string]string
+	json.Unmarshal([]byte(file), &entradas)
+
+	// Imprimir las opciones del menú
+	for i, entrada := range entradas {
+		fmt.Printf("%d. %s\n", i+1, entrada)
+	}
+
+	// Seleccionar una entrada
+	var opcion int
+	fmt.Print("Seleccione una entrada: ")
+	fmt.Scan(&opcion)
+
+	var cadena string = entradas[opcion-1]["Entrada"]
+	// Imprimir la entrada seleccionada
+	fmt.Printf("Entrada seleccionada: %s\n", cadena)
 }
