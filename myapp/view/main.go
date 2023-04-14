@@ -298,7 +298,7 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 
 func leerEntrada() {
 	// Leer el archivo JSON
-	file, _ := ioutil.ReadFile("entradas.json")
+	file, _ := ioutil.ReadFile("../resources/entradas.json")
 
 	// Decodificar el archivo JSON
 	var entradas []map[string]string
