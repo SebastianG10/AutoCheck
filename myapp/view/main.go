@@ -264,8 +264,16 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	}
 
 	//for para añadir las transiciones a la interfaz
-	for _, transicion := range automata.GetTransitions() {
-		_ = g.AddEdge(transicion.GetFromState().GetName(), transicion.GetToState().GetName(), graph.EdgeAttribute("label", transicion.GetInput()))
+	for _, t1 := range automata.GetTransitions() {
+		inputs := t1.GetInput()
+		for _, t2 := range automata.GetTransitions() {
+			if t1.GetFromState().GetName() == t2.GetFromState().GetName() && t1.GetInput() != t2.GetInput() && t1.GetToState().GetName() == t2.GetToState().GetName(){
+				inputs += ","
+		        inputs += t2.GetInput()
+			}
+			
+		}
+		_ = g.AddEdge(t1.GetFromState().GetName(), t1.GetToState().GetName(), graph.EdgeAttribute("label", inputs))
 	}
 
 	//escribimos el archivo que leerá graphviz
