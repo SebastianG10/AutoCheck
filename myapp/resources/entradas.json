@@ -1,9 +1,9 @@
 [
     {
-        "Entrada": "100100110"
+        "Entrada": "0101010"
     },
     {
-        "Entrada": "10101010"
+        "Entrada": "100100110"
     },
     {
         "Entrada": "ababbbaba"

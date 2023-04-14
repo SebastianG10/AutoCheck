@@ -8,6 +8,7 @@ import (
 	"myapp/model"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	// "time"
@@ -94,24 +95,34 @@ func logicContent() *fyne.Container {
 	finalInstruc := widget.NewLabel("Ingrese el estado final de su autómata:\nEjemplo: q1")
 	finalInput := widget.NewEntry()
 	finalCont := container.New(layout.NewVBoxLayout(), finalesLabel, finalInstruc, finalInput)
-
 	//botón para construir autómata
 	automataContainer := container.NewCenter()
+
+	//creamos un automata vacio de manera global para luego porder acceder a él
+	control := &controller.ControlAutomatas{}
+	dstateMap := control.ReadState("")
+	dsymbols := control.ReadSymbols("")
+	dtransitionsList := control.ReadTransitions("", dstateMap)
+	dinitialState := control.ReadInitialState("")
+	dfinalStatesMap := control.ReadFinalStates("")
+	automata := control.CreateAutomata(dtransitionsList, dinitialState, dfinalStatesMap, dstateMap, dsymbols)
+	fmt.Println("Automata por defecto\n" + automata.ToString())
+
 	// botón para construir el automata
 	constuirAutomata := widget.NewButtonWithIcon("Construir Autómata", theme.ConfirmIcon(), func() {
-		control := &controller.ControlAutomatas{}
 		// pasamos los datos ingresados al automata
 		stateMap := control.ReadState(statesInput.Text)
 		symbols := control.ReadSymbols(symbolsInput.Text)
 		transitionsList := control.ReadTransitions(transitionsInput.Text, stateMap)
 		initialState := control.ReadInitialState(initialInput.Text)
 		finalStatesMap := control.ReadFinalStates(finalInput.Text)
-		// se crea el automata
-		automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
-		fmt.Println(automata.ToString())
+		// se actualiza el automata global
+		automata = control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
 		// añadimos la imagen graphviz retornada por renderizarAutomata al automataContainer
+		fmt.Println("Automata construido\n" + automata.ToString())
 		automataContainer.Add(renderizarAutomata(automata))
 	})
+
 	//container izquierdo donde se ingresa la quintupla del autómata
 	cargarAutomatacont := container.New(layout.NewVBoxLayout(),
 		instrucciones,
@@ -129,6 +140,86 @@ func logicContent() *fyne.Container {
 		constuirAutomata,
 	)
 
+	// elementos del container derecho de entradas
+	entradasTitulo := canvas.NewText("Entradas                                                                                 ", blue)
+	entradasTitulo.TextStyle = fyne.TextStyle{Bold: true}
+
+	entradasInstrucciones := widget.NewLabel("En este apartado puede seleccionar alguna entrada para probar su automata")
+	entradasInstrucciones.Wrapping = fyne.TextWrapBreak
+
+	entradasDisp := widget.NewLabel("Entradas disponibles:")
+
+	// Leer el archivo JSON con las entradas
+	file, _ := ioutil.ReadFile("../resources/entradas.json")
+
+	// Decodificar el archivo JSON
+	var entradas []map[string]string
+	json.Unmarshal([]byte(file), &entradas)
+
+	// Imprimir las opciones del menú
+	listEntrStr := ""
+	for i := range entradas {
+		entradaStr := entradas[i]["Entrada"]
+		listEntrStr += fmt.Sprintf("%d. %s\n", i+1, entradaStr)
+	}
+
+	listEntrLabel := widget.NewLabel(listEntrStr)
+
+	// Seleccionar una entrada
+	opcionInstruccion := widget.NewLabel("Seleccione una entrada: ")
+	ingresoOpcion := widget.NewEntry()
+
+	respuestaCont := container.New(layout.NewMaxLayout())
+
+	probarEntradaBoton := widget.NewButtonWithIcon("Probar Entrada", theme.NavigateNextIcon(), func() {
+		fmt.Println("Automata xd\n" + automata.ToString())
+
+		opcion, _ := strconv.ParseInt(ingresoOpcion.Text, 0, 64)
+		var input string = entradas[opcion-1]["Entrada"]
+		// Imprimir la entrada seleccionada
+		fmt.Printf("Entrada seleccionada: %s\n", input)
+
+		entradaAceptada := automata.ProcessInput(input)
+		fmt.Printf("Después de procesar la entrada '%s', el estado actual es: %s\n", input, automata.GetCurrentState().GetName())
+
+		fmt.Println("Historial de estados actuales:")
+		for _, state := range automata.GetHistoryCurrentState() {
+			fmt.Printf("%s -> ", state.GetName())
+		}
+		// se limpria el historial de estados para el ingreso de nuevas entradas
+		automata.SetHistoryCurrentState([]*model.State{})
+
+		icono := theme.InfoIcon()
+		var msg string
+		// Prueba para IsAccepted
+		if automata.IsAccepted() && entradaAceptada {
+			msg = "Entrada Aceptada"
+			icono = theme.ConfirmIcon()
+			fmt.Println("La entrada es aceptada por el autómata.")
+		} else {
+			msg = "Entrada Rechazada"
+			icono = theme.CancelIcon()
+			fmt.Println("La entrada no es aceptada por el autómata.")
+		}
+		
+		botonRespuesta := widget.NewButtonWithIcon(msg, icono, func() {})
+		respuestaCont.Add(botonRespuesta)
+	})
+
+	//container derecho para las entradas del automata
+	entradasCont := container.New(layout.NewVBoxLayout(),
+		entradasTitulo,
+		entradasInstrucciones,
+		entradasDisp,
+		listEntrLabel,
+		opcionInstruccion,
+		ingresoOpcion,
+		probarEntradaBoton,
+		layout.NewSpacer(),
+		respuestaCont,
+		layout.NewSpacer(),
+	)
+
 	// container horizontal principal
 	content := container.New(layout.NewHBoxLayout(),
 		layout.NewSpacer(),
@@ -136,10 +227,35 @@ func logicContent() *fyne.Container {
 		widget.NewSeparator(),
 		automataContainer,
 		widget.NewSeparator(),
-		// entradasCont,
+		entradasCont,
 		layout.NewSpacer(),
 	)
 	return content
+}
+
+func leerEntrada() {
+	/*
+		// Leer el archivo JSON
+		file, _ := ioutil.ReadFile("../resources/entradas.json")
+
+		// Decodificar el archivo JSON
+		var entradas []map[string]string
+		json.Unmarshal([]byte(file), &entradas)
+
+		// Imprimir las opciones del menú
+		for i, entrada := range entradas {
+			fmt.Printf("%d. %s\n", i+1, entrada)
+		}
+
+		// Seleccionar una entrada
+		var opcion int
+		fmt.Print("Seleccione una entrada: ")
+		fmt.Scan(&opcion)
+
+		var cadena string = entradas[opcion-1]["Entrada"]
+		// Imprimir la entrada seleccionada
+		fmt.Printf("Entrada seleccionada: %s\n", cadena)
+	*/
 }
 
 func welcomeContent(app fyne.App) *fyne.Container {
@@ -294,27 +410,4 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	imagen.SetMinSize(fyne.NewSize(600, 600))
 	// retornamos la imagen
 	return imagen
-}
-
-func leerEntrada() {
-	// Leer el archivo JSON
-	file, _ := ioutil.ReadFile("../resources/entradas.json")
-
-	// Decodificar el archivo JSON
-	var entradas []map[string]string
-	json.Unmarshal([]byte(file), &entradas)
-
-	// Imprimir las opciones del menú
-	for i, entrada := range entradas {
-		fmt.Printf("%d. %s\n", i+1, entrada)
-	}
-
-	// Seleccionar una entrada
-	var opcion int
-	fmt.Print("Seleccione una entrada: ")
-	fmt.Scan(&opcion)
-
-	var cadena string = entradas[opcion-1]["Entrada"]
-	// Imprimir la entrada seleccionada
-	fmt.Printf("Entrada seleccionada: %s\n", cadena)
 }
