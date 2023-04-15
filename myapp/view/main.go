@@ -78,7 +78,7 @@ func logicContent() *fyne.Container {
 	//ingreso de transiciones
 	transicionesLabel := canvas.NewText("Transiciones", color.White)
 	transicionesLabel.TextStyle = fyne.TextStyle{Bold: true}
-	transitionsInstruc := widget.NewLabel("Ingrese las transiciones del automata con el sigiente formato: [from,input,to]\nEjemplo: [q0,1,q0],[q1,0,q1],...")
+	transitionsInstruc := widget.NewLabel("Ingrese las transiciones del automata con el sigiente formato: \n[from,input,to] Ejemplo: [q0,1,q0],[q1,0,q1],...")
 	transitionsInput := widget.NewEntry()
 	transitionsCont := container.New(layout.NewVBoxLayout(), transicionesLabel, transitionsInstruc, transitionsInput)
 
@@ -144,7 +144,7 @@ func logicContent() *fyne.Container {
 	entradasTitulo := canvas.NewText("Entradas                                                                                 ", blue)
 	entradasTitulo.TextStyle = fyne.TextStyle{Bold: true}
 
-	entradasInstrucciones := widget.NewLabel("En este apartado puede seleccionar alguna entrada para probar su automata")
+	entradasInstrucciones := widget.NewLabel("En este apartado puede seleccionar\nalguna entrada para probar su automata")
 	entradasInstrucciones.Wrapping = fyne.TextWrapBreak
 
 	entradasDisp := widget.NewLabel("Entradas disponibles:")
@@ -201,7 +201,7 @@ func logicContent() *fyne.Container {
 			icono = theme.CancelIcon()
 			fmt.Println("La entrada no es aceptada por el autómata.")
 		}
-		
+
 		botonRespuesta := widget.NewButtonWithIcon(msg, icono, func() {})
 		respuestaCont.Add(botonRespuesta)
 	})
@@ -407,7 +407,7 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	// obtenemos la imagen generada y le damos un tamaño minimo
 	imagen := canvas.NewImageFromFile("my-graph.gv.png")
 	imagen.FillMode = canvas.ImageFillContain
-	imagen.SetMinSize(fyne.NewSize(600, 600))
+	imagen.SetMinSize(fyne.NewSize(500, 700))
 	// retornamos la imagen
 	return imagen
 }
