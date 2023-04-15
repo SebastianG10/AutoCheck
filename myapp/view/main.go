@@ -180,6 +180,9 @@ func logicContent() *fyne.Container {
 		for _, state := range automata.GetHistoryCurrentState() {
 			fmt.Printf("%s -> ", state.GetName())
 		}
+
+
+
 		// se limpria el historial de estados para el ingreso de nuevas entradas
 		automata.SetHistoryCurrentState([]*model.State{})
 
@@ -342,7 +345,7 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	_ = draw.DOT(g, file)
 
 	// corremos el comando que genera la imagen del grafo
-	out, err := exec.Command("dot", "-Tpng", "-O", "my-graph.gv").Output()
+	out, err := exec.Command("dot", "-Tpng", "-Kneato", "-O", "my-graph.gv").Output()
 	println(&out, err)
 	// obtenemos la imagen generada y le damos un tamaño minimo
 	imagen := canvas.NewImageFromFile("my-graph.gv.png")
