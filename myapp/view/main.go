@@ -31,18 +31,12 @@ import (
 
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
-
 // var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
-// var gray = color.NRGBA{R: 170, G: 170, B: 170, A: 0xff}
 
 // main es la función principal del programa.
 func main() {
 
 	interfaz()
-
-	logicaAutomata()
-
-	leerEntrada()
 
 }
 
@@ -201,7 +195,7 @@ func logicContent() *fyne.Container {
 			icono = theme.CancelIcon()
 			fmt.Println("La entrada no es aceptada por el autómata.")
 		}
-		
+
 		botonRespuesta := widget.NewButtonWithIcon(msg, icono, func() {})
 		respuestaCont.Add(botonRespuesta)
 	})
@@ -231,31 +225,6 @@ func logicContent() *fyne.Container {
 		layout.NewSpacer(),
 	)
 	return content
-}
-
-func leerEntrada() {
-	/*
-		// Leer el archivo JSON
-		file, _ := ioutil.ReadFile("../resources/entradas.json")
-
-		// Decodificar el archivo JSON
-		var entradas []map[string]string
-		json.Unmarshal([]byte(file), &entradas)
-
-		// Imprimir las opciones del menú
-		for i, entrada := range entradas {
-			fmt.Printf("%d. %s\n", i+1, entrada)
-		}
-
-		// Seleccionar una entrada
-		var opcion int
-		fmt.Print("Seleccione una entrada: ")
-		fmt.Scan(&opcion)
-
-		var cadena string = entradas[opcion-1]["Entrada"]
-		// Imprimir la entrada seleccionada
-		fmt.Printf("Entrada seleccionada: %s\n", cadena)
-	*/
 }
 
 func welcomeContent(app fyne.App) *fyne.Container {
@@ -317,35 +286,6 @@ func welcomeContent(app fyne.App) *fyne.Container {
 		layout.NewSpacer(),
 	)
 	return content
-}
-
-func logicaAutomata() {
-	/* control := &controller.ControlAutomatas{}
-
-		stateMap := control.ReadState("q0,q1")
-		symbols := control.ReadSymbols("0,1")
-		transitionsList := control.ReadTransitions("[q0,0,q1],[q0,1,q0],[q1,0,q1],[q1,1,q0]", stateMap)
-		initialState := control.ReadInitialState("q0")
-		finalStatesMap := control.ReadFinalStates("q1")
-
-		automata := control.CreateAutomata(transitionsList, initialState, finalStatesMap, stateMap, symbols)
-
-	    // Prueba para ProcessInput
-	    input := "1010"
-	    automata.ProcessInput(input)
-	    fmt.Printf("Después de procesar la entrada '%s', el estado actual es: %s\n", input, automata.GetCurrentState().GetName())
-
-		fmt.Println("Historial de estados actuales:")
-		for _, state := range automata.GetHistoryCurrentState() {
-			fmt.Printf("%s -> ", state.GetName())
-		}
-
-		// Prueba para IsAccepted
-		if automata.IsAccepted() {
-			fmt.Println("La entrada es aceptada por el autómata.")
-		} else {
-			fmt.Println("La entrada no es aceptada por el autómata.")
-		} */
 }
 
 func renderizarAutomata(automata *model.Automata) *canvas.Image {
