@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	// "time"
+	"time"
 
 	// Imports para interfaz gráfica
 	"image/color"
@@ -31,6 +31,7 @@ import (
 
 // paleta de colores
 var blue = color.NRGBA{R: 50, G: 119, B: 168, A: 0xff}
+
 // var red = color.NRGBA{R: 242, G: 80, B: 80, A: 0xff}
 
 // main es la función principal del programa.
@@ -181,7 +182,7 @@ func logicContent() *fyne.Container {
 			fmt.Printf("%s -> ", state.GetName())
 		}
 
-
+		crearAnimacion(automata, automataContainer)
 
 		// se limpria el historial de estados para el ingreso de nuevas entradas
 		automata.SetHistoryCurrentState([]*model.State{})
@@ -353,4 +354,130 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 	imagen.SetMinSize(fyne.NewSize(500, 700))
 	// retornamos la imagen
 	return imagen
+}
+
+func crearAnimacion(automata *model.Automata, container *fyne.Container) {
+	stateHash := func(s string) string {
+		return s
+	}
+	// creamos el grafo que leerá graphviz
+	
+	for _, currentState := range automata.GetHistoryCurrentState() {
+		g := graph.New(stateHash, graph.Directed())
+		// for para añadir los estados a la interfaz
+		for _, state := range automata.GetStates() {
+			// comprobamos si es actual
+			esActual := false
+			if currentState.GetName() == state.GetName() {
+				esActual = true
+			}
+
+			// comprobamos si el estdo es inicial
+			esInicial := false
+			if state.GetName() == automata.GetInitialState().GetName() {
+				esInicial = true
+			}
+
+			// comprobamos si el estado es final
+			esFinal := false
+			for _, estFinal := range automata.GetFinalStates() {
+				if strings.EqualFold(estFinal.GetName(), state.GetName()) {
+					esFinal = true
+					break
+				}
+			}
+
+			//si el estado es inicial lo creamos con color azul, si es final como circulo doble y si es final con ambas características
+			// if esInicial && !esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			// } else if esFinal && !esInicial && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if esInicial && esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if esInicial && !esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			// } else if esFinal && !esInicial && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if esInicial && esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else {
+			// 	_ = g.AddVertex(state.GetName())
+			// }
+
+			// if esInicial && esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if esInicial && !esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			// } else if esInicial && esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if esInicial && !esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			// } else if !esInicial && esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if !esInicial && esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
+			// } else if !esInicial && !esFinal && esActual {
+			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			// } else if !esInicial && !esFinal && !esActual {
+			// 	_ = g.AddVertex(state.GetName())
+			// }
+
+			if esInicial && !esFinal {
+				if esActual {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+				} else {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+				}
+			} else if esFinal && !esInicial {
+				if esActual {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+				} else {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
+				}
+			} else if esInicial && esFinal {
+				if esActual {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+				} else {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+				}
+			} else {
+				if esActual {
+					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+				} else {
+					_ = g.AddVertex(state.GetName())
+				}
+			}
+		}
+
+		//for para añadir las transiciones a la interfaz
+		for _, t1 := range automata.GetTransitions() {
+			inputs := t1.GetInput()
+			for _, t2 := range automata.GetTransitions() {
+				if t1.GetFromState().GetName() == t2.GetFromState().GetName() && t1.GetInput() != t2.GetInput() && t1.GetToState().GetName() == t2.GetToState().GetName() {
+					inputs += ","
+					inputs += t2.GetInput()
+				}
+
+			}
+			_ = g.AddEdge(t1.GetFromState().GetName(), t1.GetToState().GetName(), graph.EdgeAttribute("label", inputs))
+		}
+
+		//escribimos el archivo que leerá graphviz
+		file, _ := os.Create("my-graph.gv")
+		_ = draw.DOT(g, file)
+
+		// corremos el comando que genera la imagen del grafo
+		out, err := exec.Command("dot", "-Tpng", "-Kneato", "-O", "my-graph.gv").Output()
+		println(&out, err)
+		// obtenemos la imagen generada y le damos un tamaño minimo
+		imagen := canvas.NewImageFromFile("my-graph.gv.png")
+		imagen.FillMode = canvas.ImageFillContain
+		imagen.SetMinSize(fyne.NewSize(500, 700))
+
+		//agregar la imagen al container del automata
+		container.RemoveAll()
+		container.Add(imagen)
+		container.Refresh()
+		time.Sleep(time.Second * 2)
+	}
 }
