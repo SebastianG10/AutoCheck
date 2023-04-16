@@ -387,41 +387,6 @@ func crearAnimacion(automata *model.Automata, container *fyne.Container) {
 				}
 			}
 
-			//si el estado es inicial lo creamos con color azul, si es final como circulo doble y si es final con ambas características
-			// if esInicial && !esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
-			// } else if esFinal && !esInicial && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if esInicial && esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if esInicial && !esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
-			// } else if esFinal && !esInicial && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if esInicial && esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else {
-			// 	_ = g.AddVertex(state.GetName())
-			// }
-
-			// if esInicial && esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if esInicial && !esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
-			// } else if esInicial && esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if esInicial && !esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
-			// } else if !esInicial && esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if !esInicial && esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
-			// } else if !esInicial && !esFinal && esActual {
-			// 	_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
-			// } else if !esInicial && !esFinal && !esActual {
-			// 	_ = g.AddVertex(state.GetName())
-			// }
-
 			if esInicial && !esFinal {
 				if esActual {
 					_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "reds3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
