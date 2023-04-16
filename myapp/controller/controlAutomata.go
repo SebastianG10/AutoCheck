@@ -10,13 +10,13 @@ import (
 type ControlAutomatas struct{}
 
 // ReadFinalStates lee una cadena de estados finales separados por comas y devuelve una lista de strings sin espacios en blanco
-func (c *ControlAutomatas) ReadFinalStates(finalStates string) map[string]*model.State {
+func (c *ControlAutomatas) ReadFinalStates(finalStates string) []*model.State {
 	stateFinalList := strings.Split(finalStates, ",")
 	for i, state := range stateFinalList {
 		stateFinalList[i] = strings.TrimSpace(state)
 	}
-	stateFinalMap := c.CreateStateMap(stateFinalList)
-	return stateFinalMap
+	stateFinalSlice := c.CreateStateSlice(stateFinalList)
+	return stateFinalSlice
 }
 
 // ReadInitialState lee un estado inicial y lo devuelve como un string sin espacios en blanco
@@ -34,19 +34,19 @@ func (c *ControlAutomatas) ReadSymbols(symbols string) []string {
 	return symbolsList
 }
 
-// ReadState lee una cadena de estados separados por comas y devuelve un mapa de states
-func (c *ControlAutomatas) ReadState(state string) map[string]*model.State {
+// ReadState lee una cadena de estados separados por comas y devuelve un slice de states
+func (c *ControlAutomatas) ReadState(state string) []*model.State {
 	stateList := strings.Split(state, ",")
 	for i, s := range stateList {
 		stateList[i] = strings.TrimSpace(s)
 	}
-	stateMap := c.CreateStateMap(stateList)
+	stateSlice := c.CreateStateSlice(stateList)
 
-	return stateMap
+	return stateSlice
 }
 
-// readTransitions recibe una cadena de transiciones en formato "from,input,to" y un mapa de estados, y devuelve una lista de objetos Transition.
-func (c *ControlAutomatas) ReadTransitions(transitionString string, stateMap map[string]*model.State) []*model.Transition {
+// readTransitions recibe una cadena de transiciones en formato "from,input,to" y un sllice de estados, y devuelve una lista de objetos Transition.
+func (c *ControlAutomatas) ReadTransitions(transitionString string, stateSlice []*model.State) []*model.Transition {
 	transitions := make([]*model.Transition, 0)
 
 	// Divide la cadena de entrada por corchetes para obtener una lista de transiciones
@@ -66,13 +66,23 @@ func (c *ControlAutomatas) ReadTransitions(transitionString string, stateMap map
 
 		from, input, to := strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]), strings.TrimSpace(parts[2])
 
-		fromState, ok := stateMap[from]
-		if !ok {
+		var fromState *model.State
+		for i, s := range stateSlice {
+			if strings.EqualFold(s.GetName(), from){
+				fromState = stateSlice[i]
+			}
+		}
+		if fromState.GetName() == "" {
 			log.Fatalf("El estado '%s' no existe en el autómata", from)
 		}
 
-		toState, ok := stateMap[to]
-		if !ok {
+		var toState *model.State
+		for i, s := range stateSlice {
+			if strings.EqualFold(s.GetName(), to){
+				toState = stateSlice[i]
+			}
+		}
+		if toState.GetName() == "" {
 			log.Fatalf("El estado '%s' no existe en el autómata", to)
 		}
 
@@ -82,15 +92,15 @@ func (c *ControlAutomatas) ReadTransitions(transitionString string, stateMap map
 	return transitions
 }
 
-// createStateMap crea un mapa de estados a partir de una lista de nombres de estados.
+// createStateSlice crea un slice de estados a partir de una lista de nombres de estados.
 // Recibe: stateNames - una lista de nombres de estados.
-// Retorna: Un mapa de estados.
-func (c *ControlAutomatas) CreateStateMap(stateNames []string) map[string]*model.State {
-	stateMap := make(map[string]*model.State)
-	for _, name := range stateNames {
-		stateMap[name] = model.NewState(name)
+// Retorna: Un slice de estados.
+func (c *ControlAutomatas) CreateStateSlice(stateNames []string) []*model.State {
+	stateSlice := make([]*model.State, len(stateNames))
+	for i, name := range stateNames {
+		stateSlice[i] = model.NewState(name)
 	}
-	return stateMap
+	return stateSlice
 }
 
 // CreateAutomata crea un autómata finito a partir de una lista de transiciones, un estado inicial,
@@ -98,15 +108,15 @@ func (c *ControlAutomatas) CreateStateMap(stateNames []string) map[string]*model
 // Recibe: transitions - una lista de transiciones.
 //
 //	initialState - el estado inicial del autómata.
-//	finalStatesMap - un mapa de estados finales.
-//	stateMap - un mapa de estados.
+//	finalStatesSlice - un slice de estados finales.
+//	stateSlice - un slice de estados.
 //	symbols - una lista de símbolos.
 //
 // Retorna: Un autómata finito.
 func (c *ControlAutomatas) CreateAutomata(transitions []*model.Transition, initialState *model.State,
-	finalStatesMap map[string]*model.State, stateMap map[string]*model.State, symbols []string) *model.Automata {
+	finalStatesSlice []*model.State, stateSlice []*model.State, symbols []string) *model.Automata {
 
-	automata := model.NewAutomata(stateMap, transitions, initialState, finalStatesMap, symbols)
+	automata := model.NewAutomata(stateSlice, transitions, initialState, finalStatesSlice, symbols)
 
 	return automata
 }

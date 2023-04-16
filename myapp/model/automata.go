@@ -8,18 +8,18 @@ import (
 
 // Automata es la estructura que representa un autómata finito.
 type Automata struct {
-	states              map[string]*State
+	states              []*State
 	transitions         []*Transition
 	initialState        *State
 	currentState        *State
-	finalStates         map[string]*State
+	finalStates         []*State
 	alphabet            []string
 	historyCurrentState []*State
 }
 
 // NewAutomata crea un nuevo objeto Automata con los estados, transiciones, estado inicial,
 // estados finales y símbolos de entrada especificados.
-func NewAutomata(states map[string]*State, transitions []*Transition, initialState *State, finalStates map[string]*State, alphabet []string) *Automata {
+func NewAutomata(states []*State, transitions []*Transition, initialState *State, finalStates []*State, alphabet []string) *Automata {
 	return &Automata{
 		states:              states,
 		transitions:         transitions,
@@ -31,13 +31,13 @@ func NewAutomata(states map[string]*State, transitions []*Transition, initialSta
 	}
 }
 
-// GetStates retorna el mapa de estados del autómata.
-func (a *Automata) GetStates() map[string]*State {
+// GetStates retorna el slice de estados del autómata.
+func (a *Automata) GetStates() []*State {
 	return a.states
 }
 
-// SetStates establece el mapa de estados del autómata.
-func (a *Automata) SetStates(states map[string]*State) {
+// SetStates establece el slice de estados del autómata.
+func (a *Automata) SetStates(states []*State) {
 	a.states = states
 }
 
@@ -72,12 +72,12 @@ func (a *Automata) SetCurrentState(currentState *State) {
 }
 
 // GetFinalStates retorna el mapa de estados finales del autómata.
-func (a *Automata) GetFinalStates() map[string]*State {
+func (a *Automata) GetFinalStates() []*State {
 	return a.finalStates
 }
 
 // SetFinalStates establece el mapa de estados finales del autómata.
-func (a *Automata) SetFinalStates(finalStates map[string]*State) {
+func (a *Automata) SetFinalStates(finalStates []*State) {
 	a.finalStates = finalStates
 }
 
@@ -108,8 +108,8 @@ func (a *Automata) ToString() string {
 	var builder strings.Builder
 
 	builder.WriteString("Estados:\n")
-	for name, state := range a.states {
-		builder.WriteString(fmt.Sprintf("\t%s: %v\n", name, state))
+	for _, state := range a.states {
+		builder.WriteString(fmt.Sprintf("\t%s\n", state))
 	}
 
 	builder.WriteString("Transiciones:\n")
@@ -120,7 +120,7 @@ func (a *Automata) ToString() string {
 	builder.WriteString(fmt.Sprintf("Estado inicial: %s\n", a.initialState.GetName()))
 
 	builder.WriteString("Estados finales:\n")
-	for name := range a.finalStates {
+	for _, name := range a.finalStates {
 		builder.WriteString(fmt.Sprintf("\t%s\n", name))
 	}
 
@@ -168,6 +168,13 @@ func (a *Automata) ProcessInput(input string) bool {
 // No recibe ningún parámetro.
 // Retorna: Un booleano que indica si la entrada es aceptada por el autómata.
 func (a *Automata) IsAccepted() bool {
-	_, isFinal := a.finalStates[a.currentState.name]
+	// comprobamos si el estado es final
+	isFinal := false
+	for _, estFinal := range a.finalStates {
+		if strings.EqualFold(estFinal.name, a.currentState.name) {
+			isFinal = true
+			break
+		}
+	}
 	return isFinal
 }

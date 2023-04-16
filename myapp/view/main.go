@@ -293,8 +293,8 @@ func welcomeContent(app fyne.App) *fyne.Container {
 }
 
 func renderizarAutomata(automata *model.Automata) *canvas.Image {
-	stateHash := func(s string) string {
-		return s
+	stateHash := func(s *model.State) string {
+		return s.GetName()
 	}
 	// creamos el grafo que leerá graphviz
 	g := graph.New(stateHash, graph.Directed())
@@ -318,13 +318,13 @@ func renderizarAutomata(automata *model.Automata) *canvas.Image {
 
 		//si el estado es inicial lo creamos con color azul, si es final como circulo doble y si es final con ambas características
 		if esInicial && !esFinal {
-			_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
+			_ = g. AddVertex(state, graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"))
 		} else if esFinal && !esInicial {
-			_ = g.AddVertex(state.GetName(), graph.VertexAttribute("shape", "doublecircle"))
+			_ = g.AddVertex(state, graph.VertexAttribute("shape", "doublecircle"))
 		} else if esInicial && esFinal {
-			_ = g.AddVertex(state.GetName(), graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
+			_ = g.AddVertex(state, graph.VertexAttribute("colorscheme", "blues3"), graph.VertexAttribute("style", "filled"), graph.VertexAttribute("color", "2"), graph.VertexAttribute("fillcolor", "1"), graph.VertexAttribute("shape", "doublecircle"))
 		} else {
-			_ = g.AddVertex(state.GetName())
+			_ = g.AddVertex(state)
 		}
 	}
 
@@ -479,5 +479,7 @@ func crearAnimacion(automata *model.Automata, container *fyne.Container) {
 		container.Add(imagen)
 		container.Refresh()
 		time.Sleep(time.Second * 2)
+
+		fmt.Println(automata.ToString())
 	}
 }
