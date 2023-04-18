@@ -6,9 +6,35 @@
         "Entrada": "100100110"
     },
     {
+        "Entrada": "1011011011"
+    },
+    {
+        "Entrada": "00111010"
+    },
+
+    {
         "Entrada": "ababbbaba"
     },
     {
         "Entrada": "abababab"
+    },
+    {
+        "Entrada": "bbaaabbab"
+    },
+    {
+        "Entrada": "babaababb"
+    },
+
+    {
+        "Entrada": "001001"
+    },
+    {
+        "Entrada": "110110"
+    },
+    {
+        "Entrada": "101001100"
+    },
+    {
+        "Entrada": "0110110010"
     }
 ]
