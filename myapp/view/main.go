@@ -432,7 +432,7 @@ func crearAnimacion(automata *model.Automata, container *fyne.Container) {
 		_ = draw.DOT(g, file)
 
 		// corremos el comando que genera la imagen del grafo
-		out, err := exec.Command("dot", "-Tpng", "-Kneato", "-O", "my-graph.gv").Output()
+		out, err := exec.Command("dot", "-Tpng", "-O", "my-graph.gv").Output()
 		println(&out, err)
 		// obtenemos la imagen generada y le damos un tamaño minimo
 		imagen := canvas.NewImageFromFile("my-graph.gv.png")

@@ -6,12 +6,11 @@
         "Entrada": "100100110"
     },
     {
-        "Entrada": "1011011011"
+        "Entrada": "10110110110"
     },
     {
         "Entrada": "00111010"
     },
-
     {
         "Entrada": "ababbbaba"
     },
@@ -22,19 +21,15 @@
         "Entrada": "bbaaabbab"
     },
     {
-        "Entrada": "babaababb"
-    },
-
-    {
-        "Entrada": "001001"
+        "Entrada": "babababb"
     },
     {
-        "Entrada": "110110"
+        "Entrada": "00100100"
     },
     {
-        "Entrada": "101001100"
+        "Entrada": "1101010"
     },
     {
-        "Entrada": "0110110010"
+        "Entrada": "10101010"
     }
 ]

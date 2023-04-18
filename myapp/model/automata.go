@@ -137,7 +137,10 @@ func (a *Automata) ToString() string {
 // Recibe: input - una cadena de entrada que se procesará.
 // No retorna ningún valor.
 func (a *Automata) ProcessInput(input string) bool {
+	a.SetHistoryCurrentState([]*State{})
 	a.currentState = a.initialState
+	a.historyCurrentState = append(a.historyCurrentState, a.currentState)
+	fmt.Println("Actual e inicial: ", a.currentState.GetName(), a.initialState.GetName())
 	for _, char := range input {
 		transitionFound := false
 		inAlphabet := false
